@@ -1,5 +1,5 @@
 # 基础配置
-PLATFORM = "xhs"
+PLATFORM = "dy"
 KEYWORDS = "python,golang"
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""
@@ -7,7 +7,7 @@ COOKIES = ""
 SORT_TYPE = "popularity_descending"
 # 具体值参见media_platform.xxx.field下的枚举值，暂时只支持抖音
 PUBLISH_TIME_TYPE = 0
-CRAWLER_TYPE = "search"  # 爬取类型，search(关键词搜索) | detail(帖子详情)| creator(创作者主页数据)
+CRAWLER_TYPE = "detail"  # 爬取类型，search(关键词搜索) | detail(帖子详情)| creator(创作者主页数据)
 
 # 是否开启 IP 代理
 ENABLE_IP_PROXY = False
@@ -28,7 +28,7 @@ HEADLESS = False
 SAVE_LOGIN_STATE = True
 
 # 数据保存类型选项配置,支持三种类型：csv、db、json
-SAVE_DATA_OPTION = "json"  # csv or db or json
+SAVE_DATA_OPTION = "csv"  # csv or db or json
 
 # 用户浏览器缓存的浏览器文件配置
 USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
@@ -40,13 +40,13 @@ START_PAGE = 1
 CRAWLER_MAX_NOTES_COUNT = 20
 
 # 并发爬虫数量控制
-MAX_CONCURRENCY_NUM = 4
+MAX_CONCURRENCY_NUM = 1
 
 # 是否开启爬图片模式, 默认不开启爬图片
 ENABLE_GET_IMAGES = False
 
 # 是否开启爬评论模式, 默认不开启爬评论
-ENABLE_GET_COMMENTS = False
+ENABLE_GET_COMMENTS = True
 
 # 是否开启爬二级评论模式, 默认不开启爬二级评论, 目前仅支持 xhs, bilibili
 # 老版本项目使用了 db, 则需参考 schema/tables.sql line 287 增加表字段
@@ -60,12 +60,44 @@ XHS_SPECIFIED_ID_LIST = [
     # ........................
 ]
 
-# 指定抖音需要爬取的ID列表
-DY_SPECIFIED_ID_LIST = [
-    "7280854932641664319",
-    "7202432992642387233"
-    # ........................
-]
+# # #指定抖音需要爬取的ID列表
+# DY_SPECIFIED_ID_LIST = [
+#  '7387819044356885798',
+#  '7387645152006901001',
+#     # ........................
+# ]
+
+import pandas as pd
+import mysql.connector
+from mysql.connector import Error
+
+DY_id_list = pd.read_csv('E:/git/MediaCrawler/to_collect/junhao_1.csv')
+
+# #sql 方法
+# #创建sql链接
+# def connect_mysql():
+#     try:
+#         connection = mysql.connector.connect(
+#         host='127.0.0.1',       # This can be your IP address or hostname (e.g., '127.0.0.1')
+#         user='root',   # Your MySQL username
+#         password='password',  # Your MySQL password
+#         database='dy_military'  # Your MySQL database
+#     )
+#         if connection.is_connected():
+#             print('Connected to MySQL database')
+#             cursor = connection.cursor()
+#     except Error as e:
+#         print(f"Error: {e}")
+#     return connection,cursor
+
+# connection,cursor = connect_mysql()
+# query = "select * from douyin_aweme_comment;"  
+# df = pd.read_sql(query, connection)
+# s = [item for item in DY_id_list['id'].tolist() if item not in df['aweme_id'].unique().tolist()]
+# DY_SPECIFIED_ID_LIST =[str(num) for num in s]
+
+# csv方法
+DY_SPECIFIED_ID_LIST =[str(num) for num in DY_id_list['id'].tolist()]
 
 # 指定快手平台需要爬取的ID列表
 KS_SPECIFIED_ID_LIST = [

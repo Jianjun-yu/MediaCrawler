@@ -206,11 +206,16 @@ class DOUYINClient(AbstractApiClient):
         result = []
         comments_has_more = 1
         comments_cursor = 0
-        while comments_has_more:
+        
+        while comments_has_more and len(result) <= 500:
+        # while comments_has_more :
+            #每次请求前等待3秒，减少请求次数，防止高频beifeng
+            await asyncio.sleep(2)
             comments_res = await self.get_aweme_comments(aweme_id, comments_cursor)
             comments_has_more = comments_res.get("has_more", 0)
             comments_cursor = comments_res.get("cursor", 0)
             comments = comments_res.get("comments", [])
+            
             if not comments:
                 continue
             result.extend(comments)

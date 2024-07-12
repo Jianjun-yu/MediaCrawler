@@ -128,18 +128,20 @@ class DouYinCrawler(AbstractCrawler):
                 await douyin_store.update_douyin_aweme(aweme_detail)
         await self.batch_get_note_comments(config.DY_SPECIFIED_ID_LIST)
 
+#获取信息的这个function似乎在只提供id的情况下并不能很好的运作，注释掉先
     async def get_aweme_detail(self, aweme_id: str, semaphore: asyncio.Semaphore) -> Any:
-        """Get note detail"""
-        async with semaphore:
-            try:
-                return await self.dy_client.get_video_by_id(aweme_id)
-            except DataFetchError as ex:
-                utils.logger.error(f"[DouYinCrawler.get_aweme_detail] Get aweme detail error: {ex}")
-                return None
-            except KeyError as ex:
-                utils.logger.error(
-                    f"[DouYinCrawler.get_aweme_detail] have not fund note detail aweme_id:{aweme_id}, err: {ex}")
-                return None
+        pass
+        # """Get note detail"""
+        # async with semaphore:
+        #     try:
+        #         return await self.dy_client.get_video_by_id(aweme_id)
+        #     except DataFetchError as ex:
+        #         utils.logger.error(f"[DouYinCrawler.get_aweme_detail] Get aweme detail error: {ex}")
+        #         return None
+        #     except KeyError as ex:
+        #         utils.logger.error(
+        #             f"[DouYinCrawler.get_aweme_detail] have not fund note detail aweme_id:{aweme_id}, err: {ex}")
+        #         return None
 
     async def batch_get_note_comments(self, aweme_list: List[str]) -> None:
         """
